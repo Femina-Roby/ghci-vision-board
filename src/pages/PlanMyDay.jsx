@@ -197,7 +197,7 @@ function PlanMyDayPage({ userData, onUpdateData }) {
   };
 
   const getActivitiesForDayAndTime = (day, time) => {
-    const timeInAMPM = convertTo12Hour(time);
+    const timeInAMPM = to24Number(time);
     const sessions = SESSIONS.filter(s => s.date === day && s.startTime === time && selectedSessions.includes(s.id))
       .map(s => ({ ...s, color: getTrackColor(s.trackId) })); 
     
@@ -207,48 +207,120 @@ function PlanMyDayPage({ userData, onUpdateData }) {
   };
 
   // Add this helper function
-const convertTo12Hour = (time24) => {
-  const [hours, minutes] = time24.split(':');
-  const hour = parseInt(hours);
-  const ampm = hour >= 12 ? 'PM' : 'AM';
-  const hour12 = hour % 12 || 12;
-  return `${hour12}:${minutes} ${ampm}`;
-};
+// const convertTo12Hour = (time24) => {
+//   const [hours, minutes] = time24.split(':');
+//   const hour = parseInt(hours);
+//   const ampm = hour >= 12 ? 'PM' : 'AM';
+//   const hour12 = hour % 12 || 12;
+//   return `${hour12}:${minutes} ${ampm}`;
+// };
+
+  // const addCustomActivity = () => {
+  //   if (activityName.trim()) {
+  //        const [startHour] = activityStartTime.split(':');
+  //   const [endHour] = activityEndTime.split(':');
+    
+  //   if (parseInt(startHour) < 10 || parseInt(startHour) > 12) {
+  //     alert('Start time must be between 10:00 AM and 12:00 PM');
+  //     return;
+  //   }
+    
+  //   if (parseInt(endHour) < 10 || parseInt(endHour) > 12) {
+  //     alert('End time must be between 10:00 AM and 12:00 PM');
+  //     return;
+  //   }
+      
+  //     const existingCount = getActivitiesForDayAndTime(activityDay, activityStartTime).length;
+
+  //     if (existingCount < 2) {
+  //       const newActivity = {
+  //         id: `custom_${Date.now()}`,
+  //         name: activityName.trim(),
+  //         day: activityDay,
+  //         startTime: activityStartTime,
+  //         endTime: activityEndTime,
+  //         color: activityColor,
+  //         isCustom: true
+  //       };
+  //       setCustomActivities([...customActivities, newActivity]);
+  //       setActivityName('');
+  //     } else {
+  //       alert("This time slot already has two activities. Please choose another time.");
+  //     }
+  //   }
+  // };
+
+
+  // Convert "10:00 AM" → 1000, "11:00 PM" → 2300, "12:00 AM" → 2400
+  const to24Number = (timeStr) => {
+    const [time, modifier] = timeStr.split(" ");
+    let [hour, minutes] = time.split(":");
+
+    hour = parseInt(hour);
+    minutes = parseInt(minutes);
+
+    // Handle AM/PM conversion
+    if (modifier === "PM" && hour !== 12) hour += 12;
+    if (modifier === "AM" && hour === 12) hour = 0;
+
+    // Special case: 12:00 AM should be considered as 24:00 for range comparison
+    if (modifier === "AM" && hour === 0 && minutes === 0) {
+      return 2400;
+    }
+
+    return hour * 100 + minutes;
+  };
+
+  const startNum = to24Number(activityStartTime);
+  const endNum = to24Number(activityEndTime);
+
+  // Allowed window: 10:00 AM (1000) → 12:00 AM (2400)
+  if (startNum < 1000 || startNum > 2400) {
+    alert("Start time must be between 10:00 AM and 12:00 AM");
+    return;
+  }
+
+  if (endNum < 1000 || endNum > 2400) {
+    alert("End time must be between 10:00 AM and 12:00 AM");
+    return;
+  }
 
   const addCustomActivity = () => {
-    if (activityName.trim()) {
-         const [startHour] = activityStartTime.split(':');
-    const [endHour] = activityEndTime.split(':');
-    
-    if (parseInt(startHour) < 10 || parseInt(startHour) > 12) {
-      alert('Start time must be between 10:00 AM and 12:00 PM');
-      return;
-    }
-    
-    if (parseInt(endHour) < 10 || parseInt(endHour) > 12) {
-      alert('End time must be between 10:00 AM and 12:00 PM');
-      return;
-    }
-      
-      const existingCount = getActivitiesForDayAndTime(activityDay, activityStartTime).length;
+    if (!activityName.trim()) return;
 
-      if (existingCount < 2) {
-        const newActivity = {
-          id: `custom_${Date.now()}`,
-          name: activityName.trim(),
-          day: activityDay,
-          startTime: activityStartTime,
-          endTime: activityEndTime,
-          color: activityColor,
-          isCustom: true
-        };
-        setCustomActivities([...customActivities, newActivity]);
-        setActivityName('');
-      } else {
-        alert("This time slot already has two activities. Please choose another time.");
-      }
+    const startNum = to24Number(activityStartTime);
+    const endNum = to24Number(activityEndTime);
+
+    // Allowed window: 10:00 AM (1000) → 12:00 AM (2400)
+    if (startNum < 1000 || startNum > 2400) {
+      alert('Start time must be between 10:00 AM and 12:00 AM');
+      return;
+    }
+
+    if (endNum < 1000 || endNum > 2400) {
+      alert('End time must be between 10:00 AM and 12:00 AM');
+      return;
+    }
+
+    const existingCount = getActivitiesForDayAndTime(activityDay, activityStartTime).length;
+
+    if (existingCount < 2) {
+      const newActivity = {
+        id: `custom_${Date.now()}`,
+        name: activityName.trim(),
+        day: activityDay,
+        startTime: activityStartTime,
+        endTime: activityEndTime,
+        color: activityColor,
+        isCustom: true
+      };
+      setCustomActivities([...customActivities, newActivity]);
+      setActivityName('');
+    } else {
+      alert("This time slot already has two activities. Please choose another time.");
     }
   };
+  
 
   const removeCustomActivity = (id) => {
     setCustomActivities(customActivities.filter(a => a.id !== id));
