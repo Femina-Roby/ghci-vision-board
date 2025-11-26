@@ -163,7 +163,7 @@ function PlanMyDayPage({ userData, onUpdateData }) {
   const [activityDay, setActivityDay] = useState('Dec 1');
   const [activityStartTime, setActivityStartTime] = useState('10:00 AM');
   const [activityEndTime, setActivityEndTime] = useState('11:00 AM');
-  const [activityColor, setActivityColor] = useState('#FF6B6B'); 
+  const [activityColor, setActivityColor] = useState('#ff6d00'); 
 
   const calendarRef = useRef(null);
 
@@ -206,7 +206,7 @@ function PlanMyDayPage({ userData, onUpdateData }) {
     return [...sessions, ...activities];
   };
 
-  // Add this helper function
+//   //Add this helper function
 // const convertTo12Hour = (time24) => {
 //   const [hours, minutes] = time24.split(':');
 //   const hour = parseInt(hours);
@@ -215,40 +215,40 @@ function PlanMyDayPage({ userData, onUpdateData }) {
 //   return `${hour12}:${minutes} ${ampm}`;
 // };
 
-  // const addCustomActivity = () => {
-  //   if (activityName.trim()) {
-  //        const [startHour] = activityStartTime.split(':');
-  //   const [endHour] = activityEndTime.split(':');
+//   const addCustomActivity = () => {
+//     if (activityName.trim()) {
+//          const [startHour] = activityStartTime.split(':');
+//     const [endHour] = activityEndTime.split(':');
     
-  //   if (parseInt(startHour) < 10 || parseInt(startHour) > 12) {
-  //     alert('Start time must be between 10:00 AM and 12:00 PM');
-  //     return;
-  //   }
+//     if (parseInt(startHour) < 10 || parseInt(startHour) > 12) {
+//       alert('Start time must be between 10:00 AM and 12:00 PM');
+//       return;
+//     }
     
-  //   if (parseInt(endHour) < 10 || parseInt(endHour) > 12) {
-  //     alert('End time must be between 10:00 AM and 12:00 PM');
-  //     return;
-  //   }
+//     if (parseInt(endHour) < 10 || parseInt(endHour) > 12) {
+//       alert('End time must be between 10:00 AM and 12:00 PM');
+//       return;
+//     }
       
-  //     const existingCount = getActivitiesForDayAndTime(activityDay, activityStartTime).length;
+//       const existingCount = getActivitiesForDayAndTime(activityDay, activityStartTime).length;
 
-  //     if (existingCount < 2) {
-  //       const newActivity = {
-  //         id: `custom_${Date.now()}`,
-  //         name: activityName.trim(),
-  //         day: activityDay,
-  //         startTime: activityStartTime,
-  //         endTime: activityEndTime,
-  //         color: activityColor,
-  //         isCustom: true
-  //       };
-  //       setCustomActivities([...customActivities, newActivity]);
-  //       setActivityName('');
-  //     } else {
-  //       alert("This time slot already has two activities. Please choose another time.");
-  //     }
-  //   }
-  // };
+//       if (existingCount < 2) {
+//         const newActivity = {
+//           id: `custom_${Date.now()}`,
+//           name: activityName.trim(),
+//           day: activityDay,
+//           startTime: activityStartTime,
+//           endTime: activityEndTime,
+//           color: activityColor,
+//           isCustom: true
+//         };
+//         setCustomActivities([...customActivities, newActivity]);
+//         setActivityName('');
+//       } else {
+//         alert("This time slot already has two activities. Please choose another time.");
+//       }
+//     }
+//   };
 
 
   // Convert "10:00 AM" → 1000, "11:00 PM" → 2300, "12:00 AM" → 2400
@@ -286,6 +286,8 @@ function PlanMyDayPage({ userData, onUpdateData }) {
   }
 
   const addCustomActivity = () => {
+
+    
     if (!activityName.trim()) return;
 
     const startNum = to24Number(activityStartTime);
@@ -323,7 +325,7 @@ function PlanMyDayPage({ userData, onUpdateData }) {
   
 
   const removeCustomActivity = (id) => {
-    setCustomActivities(customActivities.filter(a => a.id !== id));
+    setCustomActivities(customActivities.filter(a => a.id !== id))
   };
 
   const clearAllSessions = () => {
@@ -404,7 +406,7 @@ function PlanMyDayPage({ userData, onUpdateData }) {
                               className="text-[10px] p-1.5 rounded-lg text-white font-semibold shadow-md"
                               style={{ 
                                 backgroundColor: item.color,
-                                color: item.isCustom ? '#333' : 'white', 
+                                color: item.isCustom ? '#FFFFF' : 'white', 
                                 backgroundImage: item.isCustom ? `linear-gradient(135deg, ${item.color} 50%, #fff 150%)` : `linear-gradient(135deg, ${item.color} 50%, #333 150%)`
                               }}
                               title={fullTitle}
@@ -458,7 +460,28 @@ function PlanMyDayPage({ userData, onUpdateData }) {
     <select value={activityEndTime} onChange={(e) => setActivityEndTime(e.target.value)} className="w-full border-2 border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-pink-500">
       {['10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM', '7:00 PM', '8:00 PM', '9:00 PM', '10:00 PM', '11:00 PM'].map(time => <option key={time} value={time}>{time}</option>)}
     </select>
+
+    
   </div>
+</div>
+{/* Custom Activities List */}
+<div className='bg-white p-6 rounded-xl shadow mb-10 text-left'>
+
+<h2 className='text-xl font-bold mb-4'>Your Custom Activities</h2>
+
+
+{customActivities.length === 0 && <p className='text-gray-500'>No custom activities yet.</p>}
+
+
+{customActivities.map(a => (
+<div key={a.id} className='flex items-left justify-between p-3 border rounded mb-2'>
+<div>
+<p className='font-semibold'>{a.name}</p>
+<p className='text-sm text-gray-600'>{a.day} | {a.startTime} - {a.endTime}</p>
+</div>
+<button onClick={() => removeCustomActivity(a.id)} className='text-red-500'>Remove</button>
+</div>
+))}
 </div>
 
     <button
