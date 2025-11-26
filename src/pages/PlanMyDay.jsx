@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import html2canvas from "html2canvas";
 import { Download, X, ChevronDown, ChevronUp, Calendar, Heart, Plus } from 'lucide-react';
 import { auth } from '../firebase';
+import html2pdf from 'html2pdf.js';
 
 import { TRACKS, SESSIONS, HOURS, DAYS } from '../constants/conferenceData'; 
 
@@ -333,6 +334,21 @@ function PlanMyDayPage({ userData, onUpdateData }) {
     setCustomActivities([]);
   };
 
+  const exportAsPDF = (ref, fileName) => {
+  if (!ref.current) return;
+
+  const element = ref.current;
+  const opt = {
+    margin: 10,
+    filename: fileName,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { orientation: 'landscape', unit: 'mm', format: 'a4' }
+  };
+
+  html2pdf().set(opt).from(element).save();
+};
+
   return (
     <div className={`min-h-screen bg-gradient-to-br ${BG_GRADIENT} pb-12`}>
       <div className="max-w-7xl mx-auto px-4 py-10">
@@ -350,6 +366,7 @@ function PlanMyDayPage({ userData, onUpdateData }) {
           <div className="flex justify-between items-center mb-6 border-b pb-2">
             <h2 className="text-3xl font-bold text-gray-800">My GHCI Schedule</h2>
             
+            
             <div className="flex gap-3">
               {/* Export as Image */}
               <button
@@ -358,6 +375,12 @@ function PlanMyDayPage({ userData, onUpdateData }) {
               >
                 <Download size={16}/> Export as Image
               </button>
+              <button
+  onClick={() => exportAsPDF(calendarRef, 'My_GHC_Schedule.pdf')}
+  className="px-4 py-2 bg-purple-400 text-white rounded-lg hover:bg-purple-500 transition font-semibold flex items-center gap-1"
+>
+  <Download size={16}/> Export as PDF
+</button>
 
               {/* Export to Google Calendar
               <button
@@ -465,9 +488,9 @@ function PlanMyDayPage({ userData, onUpdateData }) {
   </div>
 </div>
 {/* Custom Activities List */}
-<div className='bg-white p-6 rounded-xl shadow mb-10 text-left'>
+<div className='bg-fuchsia-100 p-6 rounded-xl shadow mb-10 text-left'>
 
-<h2 className='text-xl font-bold mb-4'>Your Custom Activities</h2>
+<h2 className='text-xl font-semibold mb-4'>Your Custom Activities</h2>
 
 
 {customActivities.length === 0 && <p className='text-gray-500'>No custom activities yet.</p>}

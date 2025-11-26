@@ -28,7 +28,7 @@ const VISION_BOARD_LAYOUT = {
     EXPECTATION_2: { x: 465, y: 396, w: 322, h: 174, size: 28.54, font: 'Poppins', case: 'lowercase', color: '#03164E', rotation: 0 },
     EXPECTATION_3: { x: 122, y: 712, w: 322, h: 174, size: 28.54, font: 'Poppins', case: 'lowercase', color: '#03164E', rotation: 0 },
     PERSONALITY: { x: 35.49, y: 90.28, w: 266, h: 147, size: 60, font: 'Gochi Hand', case: 'title', color: '#000000', rotation: 9.55 },
-    TRACK: { x: 339, y: 127, w: 353, h: 118, size: 24, font: 'Poppins', case: 'sentence', color: '#5D0A01', rotation: 0 },
+    TRACK: { x: 339, y: 110, w: 353, h: 168, size: 24, font: 'Poppins', case: 'sentence', color: '#5D0A01', rotation: 0 },
     NAME: { x: 1598, y: 57, w: 260, h: 38, size: 28.41, font: 'Poppins', case: 'title', color: '#000000', rotation: 0 },
     ROLE: { x: 1598, y: 92, w: 260, h: 38, size: 17.76, font: 'Poppins', case: 'sentence', color: '#000000', rotation: 0 },
     SESSION1: { x: 870.03, y: 547.31, w: 331.58, h: 117.83, size: 24, font: 'McLaren', case: 'normal', color: '#051C62', rotation: 15.98 },
