@@ -20,6 +20,9 @@ export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 export const db = getFirestore(app);
 
+// Add Google Calendar scope to googleProvider
+googleProvider.addScope('https://www.googleapis.com/auth/calendar.events');
+
 // Auth helpers
 export const signIn = () => signInWithPopup(auth, googleProvider);
 export const logOut = () => signOut(auth);
